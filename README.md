@@ -3,7 +3,7 @@ KISSlicerPlugin plugin for Repeater Host
 
 [KISSlicerPlugin.dll](https://github.com/vassav/KISSlicerPlugin/blob/master/Bins/KISSlicerPlugin.zip)
 
-1. Содержимое архива распаковать в папку [Repetier-Host]\plugins.
+1. Содержимое архива распаковать в папку [Repetier-Host]\plugins\KISSlicerPlugin
 2. В настройках слайсера указать путь к KISSlicer.
 3. Так же можно указать имя выходного файла gcode (по умолчанию composition.gcode, в него же нужно будет сохранять gcod из киса).
 
