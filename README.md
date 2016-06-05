@@ -1,7 +1,7 @@
 # KISSlicerPlugin
 KISSlicerPlugin plugin for Repeater Host
 
-[KISSlicerPlugin.dll](https://github.com/vassav/KISSlicerPlugin/blob/master/Bins/KISSlicerPlugin.zip)
+[KISSlicerPlugin.1.0.1.dll](https://github.com/vassav/KISSlicerPlugin/blob/master/Bins/KISSlicerPlugin.1.0.1.zip)
 
 1. Содержимое архива распаковать в папку [Repetier-Host]\plugins\KISSlicerPlugin
 2. В настройках слайсера указать путь к KISSlicer.
