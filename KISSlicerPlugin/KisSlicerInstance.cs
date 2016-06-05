@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using RepetierHostExtender.interfaces;
 
@@ -30,7 +31,7 @@ namespace KISSlicerPlugin
             this._watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
               | NotifyFilters.FileName | NotifyFilters.DirectoryName;
             this._watcher.Filter = "*.gcode";
-            this._watcher.Path = this._host.WorkingDirectory;
+            this._watcher.Path = Path.GetDirectoryName(this.OutFile);
 
             // Only watch text files.
 
@@ -65,6 +66,7 @@ namespace KISSlicerPlugin
 
         public void Slice(string[] files, string output)
         {
+            var strFormat = "\"{0}\"";
             var exe = this.ExeFile;
             if (!File.Exists(exe))
             {
@@ -73,7 +75,10 @@ namespace KISSlicerPlugin
             }
             if (files.Length > 0)
             {
-                Process.Start(exe, files[0]);
+                var strParams = string.Join(" ", files
+                    .Where(x=>x!="-")
+                    .Select(x => string.Format(strFormat,x)));
+                Process.Start(exe, strParams);
                 SetSlice(true);
             }
 
