@@ -104,8 +104,10 @@ namespace KISSlicerPlugin
 
                     SetSlice(true);
                     this._process = pr;
+                    pr.EnableRaisingEvents = true;
                     pr.Exited += (a, b) =>
                     {
+                        this._host.SlicingFinished(output);
                         SetSlice(false);
                         this._process = null;
                     };
