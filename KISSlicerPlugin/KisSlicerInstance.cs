@@ -13,8 +13,11 @@ namespace KISSlicerPlugin
         private readonly IHost _host;
         private SetupPanel _setupPanel;
         private IRegMemoryFolder _reg;
-        private Panel _panel = new Panel();
+        private SlicePanel _panel;
         private FileSystemWatcher _watcher;
+
+        private Process _process;
+
 
         public KisSlicerInstance(string name, IHost host)
         {
@@ -22,7 +25,7 @@ namespace KISSlicerPlugin
             this._host = host;
             this._reg = host.GetRegistryFolder(KisSlicer.SlicersFolder + name);
             InitWatcher();
-
+            
         }
 
         private void InitWatcher()
@@ -59,6 +62,8 @@ namespace KISSlicerPlugin
         }
 
 
+        public IHost Host { get { return this._host; } }
+
         public bool PrepareSlicing()
         {
             return true;
@@ -66,32 +71,66 @@ namespace KISSlicerPlugin
 
         public void Slice(string[] files, string output)
         {
+            var isSave = true;
+
+            SliceInternall(files, output, isSave);
+        }
+
+        internal void SliceInternall(string[] files, string output, bool isSave)
+        {
             var strFormat = "\"{0}\"";
             var exe = this.ExeFile;
             if (!File.Exists(exe))
             {
-                MessageBox.Show("Not found KISSliser.. \nCheck setting.", "Warning", MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                MessageBox.Show("Not found KISSliser.. \nCheck setting.", "Warning", MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
             if (files.Length > 0)
             {
                 var strParams = string.Join(" ", files
-                    .Where(x=>x!="-")
-                    .Select(x => string.Format(strFormat,x)));
-                Process.Start(exe, strParams);
-                SetSlice(true);
-            }
+                    .Where(x => x != "-")
+                    .Select(x => string.Format(strFormat, x)));
+                if (isSave)
+                    strParams += string.Format(" -o \"{0}\"", output);
+                var si=new ProcessStartInfo(exe,strParams);
+                if (isSave)
+                    si.WindowStyle = ProcessWindowStyle.Hidden;
+                var pr = new Process();
+                pr.StartInfo = si;
 
+                if (isSave)
+                {
+
+                    SetSlice(true);
+                    this._process = pr;
+                    pr.Exited += (a, b) =>
+                    {
+                        SetSlice(false);
+                        this._process = null;
+                    };
+                }
+                pr.Start();
+            }
         }
 
         private void SetSlice(bool state)
         {
-            return;
+            //return;
             this._host.SetSlicing(state);
         }
 
         public void KillSlicing()
         {
+            try
+            {
+                if (this._process != null && !this._process.HasExited)
+                {
+                    this._process.Kill();
+                    this._process = null;
+                }
+            }
+            catch { }
             SetSlice(false);
         }
 
@@ -114,11 +153,24 @@ namespace KISSlicerPlugin
         {
             FunctionVoid method = () => this.SetSlice(false);
             this._panel.Invoke(method);
+            this._process = null;
         }
 
 
         public string Name { get { return this._name; } }
-        public Control Panel { get {return this._panel;} }
+
+        public Control Panel
+        {
+            get
+            {
+                if(this._panel==null)
+                    this._panel=new SlicePanel();
+
+                this._panel.Init(this);
+
+                return this._panel;
+            }
+        }
 
         public Control Setup
         {
