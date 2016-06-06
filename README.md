@@ -12,3 +12,5 @@ KISSlicerPlugin plugin for Repeater Host
 После чего полученный gcod отобразится в репитере.
 
 P.S. Если не закрывать кисс, и повторно в нем отслайсить и сохранить модель - то она обновится и в репитере
+
+[Обсуждение установки плагина под Windows](https://github.com/vassav/KISSlicerPlugin/issues/1)
