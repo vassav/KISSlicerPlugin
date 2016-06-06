@@ -1,5 +1,5 @@
 # KISSlicerPlugin
-KISSlicerPlugin plugin for Repeater Host
+KISSlicerPlugin plugin for Repetier Host
 
 [KISSlicerPlugin.1.0.1.dll](https://github.com/vassav/KISSlicerPlugin/blob/master/Bins/KISSlicerPlugin.1.0.1.zip)
 
